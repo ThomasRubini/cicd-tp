@@ -11,10 +11,8 @@ pub mod cli;
 async fn main() {
     println!("Starting program");
 
-    let db_pool = PgPool::connect("postgres://cicd:cicd@localhost/cicd")
-        .await
-        .expect("Failed to connect to Postgres");
-
+    let args = cli::parse_args();
+    let db_pool = db::connect(args).await.unwrap();
     let state = web::AppState {
         db: db_pool
     };

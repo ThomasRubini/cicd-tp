@@ -3,13 +3,13 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(version, about)]
 pub struct Args {
-    #[arg(short = 'u', long, env, default_value = "default_user")]
+    #[arg(short = 'u', long, env, default_value = "cicd")]
     pub pg_user: String,
 
-    #[arg(short = 'p', long, env, default_value = "default_passwd")]
+    #[arg(short = 'p', long, env, default_value = "cicd")]
     pub pg_passwd: String,
 
-    #[arg(short = 'd', long, env, default_value = "default_db")]
+    #[arg(short = 'd', long, env, default_value = "cicd")]
     pub pg_db: String,
 
     #[arg(short = 'H', long, env, default_value = "localhost")]
