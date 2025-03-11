@@ -1,9 +1,10 @@
-use axum::{extract::State, response::{Html, Response}};
+use axum::{extract::State, response::{Html, Response}, Json};
 
 use crate::{
     models::{self},
     web::AppState,
 };
+use serde_json::json;
 
 pub async fn root() -> Html<&'static str> {
     Html("<h1>Hello, World!</h1>")
@@ -21,7 +22,7 @@ pub async fn get_cities(State(state): State<AppState>) -> axum::Json<Vec<models:
 pub async fn create_city(
     State(state): State<AppState>,
     city: axum::Json<models::City>,
-) {
+) -> Json<serde_json::Value> {
     // let city: models::City = sqlx::query_as(
     let newID: i32 = sqlx::query_scalar(
         "INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
@@ -35,4 +36,6 @@ pub async fn create_city(
     .fetch_one(&state.db)
     .await
     .unwrap();
+
+    Json(json!({ "id": newID }))
 }
