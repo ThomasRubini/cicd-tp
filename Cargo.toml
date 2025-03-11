@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.97"
 axum = { version = "0.8.1", features = ["tokio"] }
 sqlx = "0.8.3"
 tokio = { version = "1.44.0", features = ["rt-multi-thread"] }
