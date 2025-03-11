@@ -15,6 +15,7 @@ pub async fn launch_web_server(state: AppState) {
             "/city",
             get(endpoints::get_cities).post(endpoints::create_city),
         )
+        .route("/_health", get(endpoints::health_check))
         .with_state(state);
 
     // run it

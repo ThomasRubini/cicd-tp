@@ -39,3 +39,7 @@ pub async fn create_city(
 
     (StatusCode::CREATED, Json(json!({ "id": new_id })))
 }
+
+pub async fn health_check() -> (StatusCode, Json<serde_json::Value>) {
+    (StatusCode::CREATED, Json(json!({ "status": "ok" })))
+}
