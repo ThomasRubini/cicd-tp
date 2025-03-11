@@ -1,4 +1,4 @@
-use axum::{extract::State, response::Html};
+use axum::{extract::State, response::{Html, Response}};
 
 use crate::{
     models::{self},
@@ -21,9 +21,9 @@ pub async fn get_cities(State(state): State<AppState>) -> axum::Json<Vec<models:
 pub async fn create_city(
     State(state): State<AppState>,
     city: axum::Json<models::City>,
-) -> axum::Json<models::City> {
+) {
     // let city: models::City = sqlx::query_as(
-    let city: i32 = sqlx::query_scalar(
+    let newID: i32 = sqlx::query_scalar(
         "INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
     )
     .bind(&city.department_code)
@@ -35,10 +35,4 @@ pub async fn create_city(
     .fetch_one(&state.db)
     .await
     .unwrap();
-
-    println!("{}", city);
-
-    todo!();
-
-    // axum::Json(city)
 }
