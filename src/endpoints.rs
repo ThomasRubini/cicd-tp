@@ -1,4 +1,4 @@
-use axum::{extract::State, response::{Html, Response}, Json};
+use axum::{extract::State, response::Html, Json};
 
 use crate::{
     models::{self},
@@ -24,18 +24,18 @@ pub async fn create_city(
     city: axum::Json<models::City>,
 ) -> Json<serde_json::Value> {
     // let city: models::City = sqlx::query_as(
-    let newID: i32 = sqlx::query_scalar(
+    let new_id: i32 = sqlx::query_scalar(
         "INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
     )
     .bind(&city.department_code)
     .bind(&city.insee_code)
     .bind(&city.zip_code)
     .bind(&city.name)
-    .bind(&city.lat)
-    .bind(&city.lon)
+    .bind(city.lat)
+    .bind(city.lon)
     .fetch_one(&state.db)
     .await
     .unwrap();
 
-    Json(json!({ "id": newID }))
+    Json(json!({ "id": new_id }))
 }

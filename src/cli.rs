@@ -17,7 +17,6 @@ pub struct Args {
 
     #[arg(short = 'P', long, env, default_value = "5432")]
     pub pg_port: u16,
-
 }
 
 pub fn parse_args() -> Args {
