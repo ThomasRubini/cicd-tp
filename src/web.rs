@@ -1,6 +1,6 @@
+use crate::endpoints;
 use axum::{routing::get, Router};
 use sqlx::Pool;
-use crate::endpoints;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -10,9 +10,12 @@ pub struct AppState {
 pub async fn launch_web_server(state: AppState) {
     // build our application with a route
     let app = Router::new()
-    .route("/", get(endpoints::root))
-    .route("/city", get(endpoints::get_cities))
-    .with_state(state);
+        .route("/", get(endpoints::root))
+        .route(
+            "/city",
+            get(endpoints::get_cities).post(endpoints::create_city),
+        )
+        .with_state(state);
 
     // run it
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
