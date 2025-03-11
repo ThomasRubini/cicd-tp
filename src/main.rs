@@ -1,9 +1,21 @@
-mod web;
+use sqlx::PgPool;
+
+pub mod web;
+pub mod models;
+pub mod endpoints;
 
 
 #[tokio::main]
 async fn main() {
     println!("Starting program");
 
-    web::launch_web_server().await;
+    let db_pool = PgPool::connect("postgres://cicd:cicd@localhost/cicd")
+        .await
+        .expect("Failed to connect to Postgres");
+
+    let state = web::AppState {
+        db: db_pool
+    };
+
+    web::launch_web_server(state).await;
 }

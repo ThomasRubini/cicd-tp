@@ -1,14 +1,18 @@
-use axum::{
-    response::Html, routing::get, Router
-};
+use axum::{routing::get, Router};
+use sqlx::Pool;
+use crate::endpoints;
 
-async fn handler() -> Html<&'static str> {
-    Html("<h1>Hello, World!</h1>")
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Pool<sqlx::Postgres>,
 }
 
-pub async fn launch_web_server() {
+pub async fn launch_web_server(state: AppState) {
     // build our application with a route
-    let app = Router::new().route("/", get(handler));
+    let app = Router::new()
+    .route("/", get(endpoints::root))
+    .route("/city", get(endpoints::get_cities))
+    .with_state(state);
 
     // run it
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
