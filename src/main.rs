@@ -3,6 +3,8 @@ use sqlx::PgPool;
 pub mod web;
 pub mod models;
 pub mod endpoints;
+pub mod db;
+pub mod cli;
 
 
 #[tokio::main]
