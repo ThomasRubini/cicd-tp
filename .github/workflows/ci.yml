@@ -51,6 +51,8 @@ jobs:
       uses: docker/metadata-action@v5.7.0
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        flavor: |
+          latest=true
 
     - name: Build and push Docker image
       id: push
@@ -58,7 +60,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
