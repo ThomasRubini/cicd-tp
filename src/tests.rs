@@ -3,6 +3,7 @@ use axum::{
     http::{Request, StatusCode},
 };
 use http_body_util::BodyExt; // for `collect` method
+use sqlx::PgPool;
 use tower::ServiceExt;
 
 use crate::{
@@ -32,9 +33,9 @@ async fn test_health_check() {
     assert_eq!(response.status(), StatusCode::NO_CONTENT);
 }
 
-#[tokio::test]
-async fn test_insert_city() {
-    let state = fake_state().await;
+#[sqlx::test]
+async fn test_insert_city(pool: PgPool) {
+    let state = AppState { db: pool };
     let app = web::create_router(state.clone()).await;
 
     let mut city = models::City {
@@ -72,3 +73,42 @@ async fn test_insert_city() {
     city.id = id;
     assert_eq!(db_city, city);
 }
+
+// #[tokio::test]
+// async fn test_get_city() {
+//     let state = fake_state().await;
+//     let app = web::create_router(state.clone()).await;
+
+//     let city = models::City {
+//         id: 1,
+//         department_code: "NY".to_string(),
+//         insee_code: "NY".to_string(),
+//         zip_code: "NY".to_string(),
+//         name: "New York".to_string(),
+//         lat: 40.7128,
+//         lon: -74.0060,
+//     };
+
+//     // Insert the city into the database
+//     sqlx::query(
+//         "INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+//     )
+//     .bind(&city.department_code)
+//     .bind(&city.insee_code)
+//     .bind(&city.zip_code)
+//     .bind(&city.name)
+//     .bind(city.lat)
+//     .bind(city.lon).execute(&state.db).await.unwrap();
+
+//     let request = Request::builder()
+//         .uri("/city")
+//         .body(Body::empty())
+//         .unwrap();
+
+//     let response = app.oneshot(request).await.unwrap();
+//     assert_eq!(response.status(), StatusCode::OK);
+
+//     let body = response.into_body().collect().await.unwrap().to_bytes();
+//     let db_cities: Vec<models::City> = serde_json::from_slice(&body).unwrap();
+//     assert_eq!(db_cities, vec![city]);
+// }
