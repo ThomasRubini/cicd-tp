@@ -11,7 +11,11 @@ async fn main() {
     println!("Starting program");
 
     let args = cli::parse_args();
+
+    println!("Connecting to database..");
     let db_pool = db::connect(args).await.unwrap();
+    println!("Connected to database");
+
     let state = web::AppState { db: db_pool };
 
     web::launch(web::create_router(state).await).await;
