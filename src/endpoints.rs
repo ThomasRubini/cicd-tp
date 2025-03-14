@@ -6,10 +6,12 @@ use crate::{
 };
 use serde_json::json;
 
+#[utoipa::path(get, path = "/", responses((status = OK)))]
 pub async fn root() -> Html<&'static str> {
     Html("<h1>Hello, World!</h1>")
 }
 
+#[utoipa::path(get, path = "/city", responses((status = OK, body = Vec<models::City>)))]
 pub async fn get_cities(State(state): State<AppState>) -> axum::Json<Vec<models::City>> {
     let cities: Vec<models::City> = sqlx::query_as("SELECT * FROM city")
         .fetch_all(&state.db)
@@ -19,6 +21,7 @@ pub async fn get_cities(State(state): State<AppState>) -> axum::Json<Vec<models:
     axum::Json(cities)
 }
 
+#[utoipa::path(post, path = "/city", request_body = models::City, responses((status = CREATED, body = models::IdResponse)))]
 pub async fn create_city(
     State(state): State<AppState>,
     city: axum::Json<models::City>,
@@ -40,6 +43,7 @@ pub async fn create_city(
     (StatusCode::CREATED, Json(json!({ "id": new_id })))
 }
 
+#[utoipa::path(get, path = "/_health", responses((status = NO_CONTENT)))]
 pub async fn health_check() -> StatusCode {
     StatusCode::NO_CONTENT
 }

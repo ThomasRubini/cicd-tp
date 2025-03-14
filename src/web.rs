@@ -1,24 +1,25 @@
 use crate::endpoints;
-use axum::{routing::get, Router};
 use sqlx::Pool;
+use utoipa_axum::{router::OpenApiRouter, routes};
+use utoipa_swagger_ui::SwaggerUi;
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: Pool<sqlx::Postgres>,
 }
 
-pub async fn create_router(state: AppState) -> Router {
-    Router::new()
-        .route("/", get(endpoints::root))
-        .route(
-            "/city",
-            get(endpoints::get_cities).post(endpoints::create_city),
-        )
-        .route("/_health", get(endpoints::health_check))
+pub async fn create_router(state: AppState) -> OpenApiRouter {
+    OpenApiRouter::new()
+        .routes(routes!(endpoints::root))
+        .routes(routes!(endpoints::get_cities, endpoints::create_city))
+        .routes(routes!(endpoints::health_check))
         .with_state(state)
 }
 
-pub async fn launch(router: Router) {
+pub async fn launch(oapi_router: OpenApiRouter) {
+    let (router, oapi) = oapi_router.split_for_parts();
+    let router = router.merge(SwaggerUi::new("/swagger").url("/api-docs/openapi.json", oapi));
+
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();

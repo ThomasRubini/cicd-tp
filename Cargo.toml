@@ -11,6 +11,9 @@ serde_json = "1.0.140"
 sqlx = { version = "0.8.3", features = ["migrate", "postgres", "runtime-tokio"] }
 tokio = { version = "1.44.0", features = ["rt-multi-thread"] }
 clap = { version = "4.5", features = ["derive","env"] }
+utoipa-swagger-ui = { version = "9.0.0", features = ["axum"] }
+utoipa = "5.3.1"
+utoipa-axum = "0.2.0"
 
 [dev-dependencies]
 http-body-util = "0.1.3"

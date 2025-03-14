@@ -1,6 +1,7 @@
 use axum::{
     body::Body,
     http::{Request, StatusCode},
+    Router,
 };
 use http_body_util::BodyExt; // for `collect` method
 use sqlx::PgPool;
@@ -10,6 +11,10 @@ use crate::{
     models,
     web::{self, AppState},
 }; // for `oneshot` method
+
+async fn create_router(state: AppState) -> Router {
+    web::create_router(state).await.split_for_parts().0
+}
 
 async fn fake_state() -> AppState {
     let db_url = std::env::var("TEST_DB_URL")
@@ -21,7 +26,7 @@ async fn fake_state() -> AppState {
 
 #[tokio::test]
 async fn test_health_check() {
-    let app = web::create_router(fake_state().await).await;
+    let app = create_router(fake_state().await).await;
 
     let request = Request::builder()
         .uri("/_health")
@@ -36,7 +41,7 @@ async fn test_health_check() {
 #[sqlx::test]
 async fn test_insert_city(pool: PgPool) {
     let state = AppState { db: pool };
-    let app = web::create_router(state.clone()).await;
+    let app = create_router(state.clone()).await;
 
     let mut city = models::City {
         id: 1,
@@ -77,7 +82,7 @@ async fn test_insert_city(pool: PgPool) {
 #[sqlx::test]
 async fn test_get_city(pool: PgPool) {
     let state = AppState { db: pool };
-    let app = web::create_router(state.clone()).await;
+    let app = create_router(state.clone()).await;
 
     let city = models::City {
         id: 1,
