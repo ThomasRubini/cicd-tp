@@ -19,7 +19,7 @@ async fn fake_state() -> AppState {
 }
 
 #[tokio::test]
-async fn test_hello_world() {
+async fn test_health_check() {
     let app = web::create_router(fake_state().await).await;
 
     let request = Request::builder()
