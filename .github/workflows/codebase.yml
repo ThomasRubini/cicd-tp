@@ -1,0 +1,22 @@
+name: Cosebase
+
+on:
+  push:
+    paths:
+      - 'src/**.rs'
+      - '.github/workflows/codebase.yml'
+  workflow_call:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run pre-commit
+      run: pre-commit run --all-files
+
+    - name: Call testing workflow
+      uses: ./.github/workflows/testing.yml

@@ -14,7 +14,7 @@ env:
 
 
 jobs:
-  lint-build-push:
+  format-lint:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,15 +26,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install toolchain
-      id: rustup
-      run: rustup show
-
     - name: Run cargo fmt
       run: cargo fmt -- --check
-
-    - name: Run cargo check
-      run: cargo check --all-features
 
     - name: Run Clippy
       run: cargo clippy --all-features -- -D warnings
