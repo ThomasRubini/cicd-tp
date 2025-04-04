@@ -57,6 +57,9 @@ jobs:
       - name: Install toolchain
         id: rustup
         run: rustup show
+      
+      - name: Setup postgres database
+        run: docker compose up --wait -d
 
       - name: Run cargo test
         run: cargo test --all-features
