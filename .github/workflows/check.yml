@@ -56,7 +56,7 @@ jobs:
 
       - name: Install toolchain
         id: rustup
-        run: rustup show
+        run: rustup toolchain install stable --profile minimal
       
       - name: Setup postgres database
         run: docker compose up --wait -d
