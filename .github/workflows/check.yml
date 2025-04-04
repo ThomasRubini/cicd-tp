@@ -61,6 +61,10 @@ jobs:
       - name: Setup postgres database
         run: docker compose up --wait -d
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: cargo-${{ hashFiles('src/**') }}
+
       - name: Run cargo test
         env:
           DATABASE_URL: postgres://cicd:cicd@localhost:5432/cicd
