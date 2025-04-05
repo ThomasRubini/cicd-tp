@@ -1,4 +1,6 @@
 use crate::endpoints;
+use axum::{routing::get, Router};
+use axum_prometheus::PrometheusMetricLayer;
 use sqlx::Pool;
 use utoipa_axum::{router::OpenApiRouter, routes};
 use utoipa_swagger_ui::SwaggerUi;
@@ -8,7 +10,23 @@ pub struct AppState {
     pub db: Pool<sqlx::Postgres>,
 }
 
-pub async fn create_router(state: AppState) -> OpenApiRouter {
+pub async fn create_basic_router(state: AppState) -> Router {
+    create_oapi_router(state).await.split_for_parts().0
+}
+
+pub async fn create_full_router(state: AppState) -> Router {
+    // Add OpenAPI routes
+    let (router, oapi) = create_oapi_router(state).await.split_for_parts();
+    let router = router.merge(SwaggerUi::new("/swagger").url("/api-docs/openapi.json", oapi));
+
+    // Add Prometheus route
+    let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
+    router
+        .route("/metrics", get(|| async move { metric_handle.render() }))
+        .layer(prometheus_layer)
+}
+
+async fn create_oapi_router(state: AppState) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(endpoints::root))
         .routes(routes!(endpoints::get_cities, endpoints::create_city))
@@ -16,10 +34,7 @@ pub async fn create_router(state: AppState) -> OpenApiRouter {
         .with_state(state)
 }
 
-pub async fn launch(oapi_router: OpenApiRouter) {
-    let (router, oapi) = oapi_router.split_for_parts();
-    let router = router.merge(SwaggerUi::new("/swagger").url("/api-docs/openapi.json", oapi));
-
+pub async fn launch(router: Router) {
     let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
         .await
         .unwrap();

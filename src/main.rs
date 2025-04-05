@@ -18,5 +18,5 @@ async fn main() {
 
     let state = web::AppState { db: db_pool };
 
-    web::launch(web::create_router(state).await).await;
+    web::launch(web::create_full_router(state).await).await;
 }
