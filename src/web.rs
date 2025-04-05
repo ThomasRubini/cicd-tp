@@ -34,8 +34,8 @@ async fn create_oapi_router(state: AppState) -> OpenApiRouter {
         .with_state(state)
 }
 
-pub async fn launch(router: Router) {
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+pub async fn launch(router: Router, bind_addr: String) {
+    let listener = tokio::net::TcpListener::bind(bind_addr).await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, router.into_make_service())
         .await

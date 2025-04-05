@@ -17,6 +17,9 @@ pub struct Args {
 
     #[arg(long, env, default_value = "5432")]
     pub pg_port: u16,
+
+    #[arg(long, env, default_value = "0.0.0.0:8080")]
+    pub bind_address: String,
 }
 
 pub fn parse_args() -> Args {
