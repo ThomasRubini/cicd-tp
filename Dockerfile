@@ -22,5 +22,5 @@ FROM scratch
 USER 1000
 COPY --from=builder /app.bin /app.bin
 
-EXPOSE 3000
+EXPOSE 8080
 CMD ["/app.bin"]

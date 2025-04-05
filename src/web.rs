@@ -20,7 +20,7 @@ pub async fn launch(oapi_router: OpenApiRouter) {
     let (router, oapi) = oapi_router.split_for_parts();
     let router = router.merge(SwaggerUi::new("/swagger").url("/api-docs/openapi.json", oapi));
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
         .await
         .unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
