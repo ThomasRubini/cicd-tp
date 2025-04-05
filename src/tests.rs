@@ -13,7 +13,7 @@ use crate::{
 }; // for `oneshot` method
 
 async fn create_router(state: AppState) -> Router {
-    web::create_router(state).await.split_for_parts().0
+    web::create_basic_router(state).await
 }
 
 async fn fake_state() -> AppState {

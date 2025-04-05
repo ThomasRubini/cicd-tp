@@ -2,7 +2,7 @@ use crate::cli::Args;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::Error;
 
-pub async fn connect(args: Args) -> Result<sqlx::PgPool, Error> {
+pub async fn connect(args: &Args) -> Result<sqlx::PgPool, Error> {
     // Database URL
     let database_url: &str = &format!(
         "postgres://{}:{}@{}/{}",

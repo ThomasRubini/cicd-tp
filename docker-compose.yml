@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:17.4
     environment:
       POSTGRES_USER: cicd
       POSTGRES_PASSWORD: cicd
@@ -11,5 +11,28 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./postgres_init:/docker-entrypoint-initdb.d/
 
+  grafana:
+    image: grafana/grafana:11.6.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./services/grafana/:/etc/grafana/
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:v2.53.4
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./services/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prom_data:/prometheus
+    extra_hosts:
+      - "cicd-tp:host-gateway"
+
 volumes:
   db_data:
+  prom_data:
