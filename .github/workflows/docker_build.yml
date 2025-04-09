@@ -9,10 +9,12 @@ on:
       - main
     paths:
       - 'Dockerfile'
+      - '.dockerignore'
       - '.github/workflows/docker_build.yml'
       - 'src/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
+      - '.gitignore'
 
 
 jobs:
