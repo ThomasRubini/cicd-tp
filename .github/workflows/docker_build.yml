@@ -89,7 +89,7 @@ jobs:
     - name: Push
       id: push
       if: ${{ steps.meta.outputs.tags != '' }}
-      run:
+      run: |
         echo "Pushing image to registry"
         echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
 
