@@ -15,7 +15,6 @@ on:
       - 'Cargo.lock'
       - '.gitignore'
 
-
 jobs:
   build_docker:
     name: Docker build
@@ -56,12 +55,14 @@ jobs:
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
           type=ref,event=tag
+          type=sha
 
     - name: Build Docker image and push on main
-      id: push
+      id: build
       uses: docker/build-push-action@v6.15.0
       with:
-        push: ${{ steps.meta.outputs.tags != '' }}
+        push: false
+        load: true
         context: .
         file: ./Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
@@ -69,10 +70,25 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: Generate artifact attestation
-      uses: actions/attest-build-provenance@v2.2.3
-      if: ${{ steps.meta.outputs.tags != '' }}
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
       with:
-        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: true
+        image-ref: ${{ steps.meta.outputs.tags }}
+        format: 'sarif'
+        exit-code: '0'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: Push
+      id: push
+      if: ${{ steps.meta.outputs.tags != '' }}
+      run: |
+        echo "Pushing image to registry"
+        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
