@@ -58,7 +58,7 @@ jobs:
           type=sha
 
     - name: Build Docker image and push on main
-      id: push
+      id: build
       uses: docker/build-push-action@v6.15.0
       with:
         push: false
@@ -87,6 +87,7 @@ jobs:
         sarif_file: 'trivy-results.sarif'
 
     - name: Push
+      id: push
       if: ${{ steps.meta.outputs.tags != '' }}
       run:
         echo "Pushing image to registry"
@@ -96,6 +97,6 @@ jobs:
       uses: actions/attest-build-provenance@v2.2.3
       if: ${{ steps.meta.outputs.tags != '' }}
       with:
-        subject-name: ${{ steps.meta.outputs.tags }}
+        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
