@@ -14,7 +14,6 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
 
-
 jobs:
   build_docker:
     name: Docker build
@@ -60,13 +59,37 @@ jobs:
       id: push
       uses: docker/build-push-action@v6.15.0
       with:
-        push: ${{ steps.meta.outputs.tags != '' }}
+        push: false
         context: .
         file: ./Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: '${{ env.IMAGE_NAME }}:latest'
+        format: 'json'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        output: 'trivy-report.json'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Vulnerability Scan Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-report
+        path: trivy-report.json
+        retention-days: 30
+
+    - name: Push
+      if: ${{ steps.meta.outputs.tags != '' }}
+      run:
+        echo "Pushing image to registry"
+        docker push -a ${{ steps.meta.outputs.tags }}
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v2.2.3
