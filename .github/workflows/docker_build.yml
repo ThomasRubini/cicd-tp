@@ -70,6 +70,13 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
+    - name: Push
+      id: push
+      if: ${{ steps.meta.outputs.tags != '' }}
+      run: |
+        echo "Pushing image to registry"
+        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
+
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
       with:
@@ -85,10 +92,3 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
-
-    - name: Push
-      id: push
-      if: ${{ steps.meta.outputs.tags != '' }}
-      run: |
-        echo "Pushing image to registry"
-        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
