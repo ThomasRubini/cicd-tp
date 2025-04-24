@@ -57,7 +57,7 @@ jobs:
           type=ref,event=tag
           type=sha
 
-    - name: Build Docker image and push on main
+    - name: Build Docker image
       id: build
       uses: docker/build-push-action@v6.15.0
       with:
@@ -70,17 +70,15 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: Push
-      id: push
-      if: ${{ steps.meta.outputs.tags != '' }}
+    - name: Extract first image ID
+      id: image_id
       run: |
-        echo "Pushing image to registry"
-        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
+        echo "IMAGE_ID=$(echo ${{ steps.meta.outputs.tags }} | cut -d ',' -f 1)" >> $GITHUB_ENV
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: ${{ steps.meta.outputs.tags }}
+        image-ref: ${{ env.IMAGE_ID }}
         format: 'sarif'
         exit-code: '0'
         ignore-unfixed: true
@@ -92,3 +90,10 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
+
+    - name: Push
+      id: push
+      if: ${{ steps.meta.outputs.tags != '' }}
+      run: |
+        echo "Pushing image to registry"
+        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
