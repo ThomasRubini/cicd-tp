@@ -98,4 +98,4 @@ jobs:
       if: ${{ steps.meta.outputs.tags != '' }}
       run: |
         echo "Pushing image to registry"
-        echo ${{ steps.meta.outputs.tags }} | xargs -n1 docker push
+        echo "${{ steps.meta.outputs.tags }}" | xargs -n1 docker push
