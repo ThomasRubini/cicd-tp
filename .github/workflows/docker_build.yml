@@ -24,6 +24,8 @@ jobs:
       packages: write
       id-token: write
       attestations: write
+      actions: read
+      security-events: write
     env:
       REGISTRY: ghcr.io
       # github.repository as <account>/<repo>
