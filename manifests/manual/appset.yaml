@@ -28,6 +28,8 @@ spec:
           parameters:
           - name: "image.tag"
             value: "pr-{{.number}}"
+          - name: "dev.is"
+            value: "true"
           - name: "dev.pr_number"
             value: "{{.number}}"
       project: "cicdtp"

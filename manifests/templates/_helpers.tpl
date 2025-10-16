@@ -1,10 +1,7 @@
-{{- define "cicdtp.is_dev_env" -}}
-{{ eq .Values.image.tag "latest" }}
-{{- end -}}
-
 {{- define "cicdtp.db_name" -}}
-{{- if include "cicdtp.is_dev_env" . | fromYaml -}}
-app
-{{- else -}}
+{{- if .Values.dev.is -}}
 preview-pr-{{ .Values.dev.pr_number }}
+{{- else -}}
+app
+{{- end -}}
 {{- end -}}
