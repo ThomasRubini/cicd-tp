@@ -1,4 +1,5 @@
-cluster_name: mycluster
+pg_cluster:
+  name: mycluster
 
 image:
   repository: ghcr.io/thomasrubini/cicdtp
