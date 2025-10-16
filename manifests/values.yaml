@@ -1,6 +1,6 @@
 pg_cluster:
   name: mycluster
-  prod_db: prod
+  prod_db: main
 
 # Set when in dev mode
 dev:
