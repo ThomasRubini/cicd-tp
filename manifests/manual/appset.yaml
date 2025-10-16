@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cicdtp-apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - pullRequest:
+      github:
+        owner: thomasrubini
+        repo: cicdtp
+      requeueAfterSeconds: 10
+  template:
+    metadata:
+      name: 'cicdtp-preview-{{.branch_slug}}'
+    spec:
+      source:
+        repoURL: 'https://github.com/ThomasRubini/cicdtp.git'
+        targetRevision: HEAD
+        path: manifests/
+        helm:
+          parameters:
+          - name: "image.tag"
+            value: "sha-{{.head_short_sha_7}}"
+      project: "cicdtp"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'cicdtp'
+      syncPolicy:
+        automated:
+          prune: true  
+        syncOptions:
+        - CreateNamespace=true
+---
