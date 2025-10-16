@@ -24,7 +24,7 @@ spec:
         targetRevision: HEAD
         path: manifests/
         helm:
-          releaseName: cicdtp-pr-{{.number}}
+          releaseName: cicdtp-pr-{{.number}}-{{.head_short_sha_7}}
           parameters:
           - name: "image.tag"
             value: "pr-{{.number}}"
