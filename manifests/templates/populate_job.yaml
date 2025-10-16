@@ -22,9 +22,6 @@ spec:
           - -c
           - |
             set -e
-            echo "Sleeping for 10s"
-            sleep 10
-
             echo "Starting database population from MAIN to MYDB..."
             
             # Wait for source database to be ready
