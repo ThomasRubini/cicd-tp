@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cityapi
-        image: docker pull ghcr.io/thomasrubini/cicd-tp:latest
+        image: ghcr.io/thomasrubini/cicd-tp:latest
         ports:
         - containerPort: 8080
           name: http
