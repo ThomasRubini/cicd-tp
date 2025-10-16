@@ -1,0 +1,1 @@
+Folder for ArgoCD manifests and installation instructions.
