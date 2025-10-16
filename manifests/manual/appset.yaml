@@ -28,6 +28,8 @@ spec:
           parameters:
           - name: "image.tag"
             value: "pr-{{.number}}"
+          - name: "dev.pr_number"
+            value: "{{.number}}"
       project: "cicdtp"
       destination:
         server: https://kubernetes.default.svc

@@ -1,6 +1,10 @@
 pg_cluster:
   name: mycluster
 
+# Set when in dev mode
+dev:
+  pr_number: 0
+
 image:
   repository: ghcr.io/thomasrubini/cicdtp
   pullPolicy: Always

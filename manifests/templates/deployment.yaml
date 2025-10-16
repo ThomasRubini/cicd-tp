@@ -33,10 +33,7 @@ spec:
               name: {{ .Values.pg_cluster.name }}-app
               key: password
         - name: PG_DB
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.pg_cluster.name }}-app
-              key: dbname
+          value: {{include "cicdtp.db_name" . }}
         - name: PG_HOST
           valueFrom:
             secretKeyRef:
