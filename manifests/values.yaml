@@ -1,8 +1,10 @@
 pg_cluster:
   name: mycluster
+  prod_db: prod
 
 # Set when in dev mode
 dev:
+  is: false
   pr_number: 0
 
 image:

@@ -3,8 +3,17 @@ kind: Database
 metadata:
   name: {{ .Release.Name }}
 spec:
+  # Delete DBs from dev envs
+  {{- if .Values.dev.is }}
   databaseReclaimPolicy: delete
+  {{- end }}
+
   name: {{include "cicdtp.db_name" . }}
   owner: app
   cluster:
     name: {{ .Values.pg_cluster.name }}
+
+  # Dev is templated from prod
+  {{- if .Values.dev.is }}
+  template: {{ .Values.pg_cluster.prod_db | quote }}
+  {{- end }}

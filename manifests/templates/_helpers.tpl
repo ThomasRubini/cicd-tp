@@ -2,6 +2,6 @@
 {{- if .Values.dev.is -}}
 pr-{{ .Values.dev.pr_number }}-{{ .Values.dev.commit_hash }}
 {{- else -}}
-app
+{{ .Values.pg_cluster.prod_db }}
 {{- end -}}
 {{- end -}}
