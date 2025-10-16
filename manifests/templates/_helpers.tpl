@@ -1,3 +1,3 @@
-{{- define "mychart.is_dev_env" -}}
+{{- define "cicdtp.is_dev_env" -}}
 {{ eq .Values.image.tag "latest" }}
 {{- end -}}

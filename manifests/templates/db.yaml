@@ -1,13 +1,13 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  {{- if include "mychart.is_dev_env" . }}
+  {{- if include "cicdtp.is_dev_env" . }}
   name: preview-{{ .Values.image.tag }}
   {{- else }}
   name: prod
   {{- end }}
 spec:
-  {{- if include "mychart.is_dev_env" . }}
+  {{- if include "cicdtp.is_dev_env" . }}
   {{- else }}
   name: prod
   {{- end }}
