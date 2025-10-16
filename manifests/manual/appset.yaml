@@ -27,7 +27,7 @@ spec:
           releaseName: cicdtp-pr-{{.number}}-{{.head_short_sha_7}}
           parameters:
           - name: "image.tag"
-            value: "pr-{{.number}}"
+            value: "sha-{{.head_short_sha_7}}"
           - name: "dev.is"
             value: "true"
           - name: "dev.pr_number"

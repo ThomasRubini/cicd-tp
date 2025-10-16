@@ -52,6 +52,8 @@ jobs:
     - name: Extract metadata
       id: meta
       uses: docker/metadata-action@v5.7.0
+      env:
+        DOCKER_METADATA_PR_HEAD_SHA: true
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         # We want to tag every commit on main with the 'latest' tag
