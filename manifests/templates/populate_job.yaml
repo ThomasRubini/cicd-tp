@@ -1,0 +1,109 @@
+{{- if .Values.dev.is }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-populate-db
+  labels:
+    app: {{ .Release.Name }}
+    component: db-populate
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: db-populate
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: db-populate
+        image: postgres:15-alpine
+        command: ["/bin/bash"]
+        args:
+          - -c
+          - |
+            set -e
+            echo "Sleeping for 10s"
+            sleep 10
+
+            echo "Starting database population from MAIN to MYDB..."
+            
+            # Wait for source database to be ready
+            until pg_isready -h "$SOURCE_PG_HOST" -p "$SOURCE_PG_PORT" -U "$SOURCE_PG_USER"; do
+              echo "Waiting for source database to be ready..."
+              sleep 2
+            done
+            
+            # Wait for target database to be ready
+            until pg_isready -h "$TARGET_PG_HOST" -p "$TARGET_PG_PORT" -U "$TARGET_PG_USER"; do
+              echo "Waiting for target database to be ready..."
+              sleep 2
+            done
+            
+            echo "Both databases are ready. Starting data export/import..."
+            
+            # Export from MAIN database and pipe to MYDB database
+            PGPASSWORD="$SOURCE_PG_PASSWD" pg_dump \
+              -h "$SOURCE_PG_HOST" \
+              -p "$SOURCE_PG_PORT" \
+              -U "$SOURCE_PG_USER" \
+              -d "$SOURCE_PG_DB" \
+              --no-owner \
+              --no-privileges \
+              --clean \
+              --if-exists | \
+            PGPASSWORD="$TARGET_PG_PASSWD" psql \
+              -h "$TARGET_PG_HOST" \
+              -p "$TARGET_PG_PORT" \
+              -U "$TARGET_PG_USER" \
+              -d "$TARGET_PG_DB" \
+              -v ON_ERROR_STOP=1
+            
+            echo "Database population completed successfully!"
+        env:
+        # Prod DB connection details
+        - name: SOURCE_PG_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: user
+        - name: SOURCE_PG_PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: password
+        - name: SOURCE_PG_DB
+          value: {{ .Values.pg_cluster.prod_db | quote }}
+        - name: SOURCE_PG_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: host
+        - name: SOURCE_PG_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: port
+        # Dev env DB connection details
+        - name: TARGET_PG_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: user
+        - name: TARGET_PG_PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: password
+        - name: TARGET_PG_DB
+          value: {{include "cicdtp.db_name" . | quote }}
+        - name: TARGET_PG_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: host
+        - name: TARGET_PG_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.pg_cluster.name }}-app
+              key: port
+{{- end }}
