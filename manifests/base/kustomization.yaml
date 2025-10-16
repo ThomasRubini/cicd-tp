@@ -1,0 +1,6 @@
+resources:
+  - postgresql/deployment.yaml
+  - postgresql/service.yaml
+  - postgresql/pvc.yaml
+  - cityapi/deployment.yaml
+  - cityapi/service.yaml
