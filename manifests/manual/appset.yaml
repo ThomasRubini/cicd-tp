@@ -32,6 +32,8 @@ spec:
             value: "true"
           - name: "dev.pr_number"
             value: "{{.number}}"
+          - name: "dev.commit_hash"
+            value: "{{.head_short_sha_7}}"
       project: "cicdtp"
       destination:
         server: https://kubernetes.default.svc

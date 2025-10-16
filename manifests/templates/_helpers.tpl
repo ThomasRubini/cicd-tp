@@ -1,6 +1,6 @@
 {{- define "cicdtp.db_name" -}}
 {{- if .Values.dev.is -}}
-preview-pr-{{ .Values.dev.pr_number }}
+pr-{{ .Values.dev.pr_number }}-{{ .Values.dev.commit_hash }}
 {{- else -}}
 app
 {{- end -}}
