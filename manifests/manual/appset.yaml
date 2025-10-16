@@ -17,13 +17,14 @@ spec:
       requeueAfterSeconds: 10
   template:
     metadata:
-      name: 'cicdtp-preview-{{.branch_slug}}'
+      name: 'cicdtp-preview-{{.number}}'
     spec:
       source:
         repoURL: 'https://github.com/ThomasRubini/cicdtp.git'
         targetRevision: HEAD
         path: manifests/
         helm:
+          releaseName: cicdtp-preview-{{.number}}
           parameters:
           - name: "image.tag"
             value: "pr-{{.number}}"
