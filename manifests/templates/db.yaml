@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: db-{{include "cicdtp.db_name" . }}
+  name: {{ .Release.Name }}
 spec:
   name: {{include "cicdtp.db_name" . }}
   owner: app
