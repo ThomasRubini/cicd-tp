@@ -16,7 +16,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: db-populate
-        image: postgres:15-alpine
+        image: postgres:17-alpine
         command: ["/bin/bash"]
         args:
           - -c
