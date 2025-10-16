@@ -3,6 +3,7 @@ kind: Database
 metadata:
   name: {{ .Release.Name }}
 spec:
+  databaseReclaimPolicy: delete
   name: {{include "cicdtp.db_name" . }}
   owner: app
   cluster:
