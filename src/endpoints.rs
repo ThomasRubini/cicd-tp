@@ -8,7 +8,7 @@ use serde_json::json;
 
 #[utoipa::path(get, path = "/", responses((status = OK)))]
 pub async fn root() -> Html<&'static str> {
-    Html("<h1>Hello, World!</h1>")
+    Html("<h1>YOLO, World!</h1>")
 }
 
 #[utoipa::path(get, path = "/city", responses((status = OK, body = Vec<models::City>)))]
