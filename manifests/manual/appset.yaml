@@ -11,6 +11,9 @@ spec:
       github:
         owner: thomasrubini
         repo: cicdtp
+        tokenRef:
+          secretName: github-token
+          key: token
       requeueAfterSeconds: 10
   template:
     metadata:
