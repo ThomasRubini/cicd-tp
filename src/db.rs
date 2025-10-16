@@ -3,6 +3,11 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::Error;
 
 pub async fn connect(args: &Args) -> Result<sqlx::PgPool, Error> {
+    println!(
+        "Connecting to database {}@{}:{}",
+        args.pg_user, args.pg_host, args.pg_db
+    );
+
     // Database URL
     let database_url: &str = &format!(
         "postgres://{}:{}@{}/{}",
