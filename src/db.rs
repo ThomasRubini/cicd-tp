@@ -8,11 +8,11 @@ pub async fn connect(args: &Args) -> Result<sqlx::PgPool, Error> {
         "postgres://{}:{}@{}/{}",
         args.pg_user, args.pg_passwd, args.pg_host, args.pg_db
     );
-    println!("Database URL: {}", database_url);
 
     // Create a connection pool
     PgPoolOptions::new()
         .max_connections(5)
+        .acquire_timeout(std::time::Duration::from_secs(5))
         .connect(database_url)
         .await
 }
