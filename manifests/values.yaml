@@ -1,7 +1,7 @@
 cluster_name: mycluster
 
 image:
-  repository: ghcr.io/thomasrubini/cicd-tp
+  repository: ghcr.io/thomasrubini/cicdtp
   pullPolicy: Always
   tag: "latest"
 

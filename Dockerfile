@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 COPY src ./src
 # Update timestamp so Cargo knows to rebuild
 RUN touch src/main.rs
-ENV PROJECT_NAME=cicd-tp
+ENV PROJECT_NAME=cicdtp
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/app/target \
     cargo build --release && cp target/release/$PROJECT_NAME /app.bin

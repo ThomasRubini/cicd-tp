@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cityapi
+  name: cicdtp
   labels:
-    app: cityapi
+    app: cicdtp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cityapi
+      app: cicdtp
   template:
     metadata:
       labels:
-        app: cityapi
+        app: cicdtp
     spec:
       containers:
-      - name: cityapi
+      - name: cicdtp
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:

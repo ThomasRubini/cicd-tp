@@ -37,7 +37,7 @@ services:
       - ./services/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prom_data:/prometheus
     extra_hosts:
-      - "cicd-tp:host-gateway"
+      - "cicdtp:host-gateway"
 
 volumes:
   db_data:
